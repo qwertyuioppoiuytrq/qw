@@ -1,0 +1,36 @@
+<%- include('header'); -%>
+<html>
+
+<body>
+      <div class="card" "col-5">
+        <div class="cardtop">
+          <img class="animate__slideInRight" src="images/logoo.png" alt="logo" width="100px" height="80px">
+        </div>
+        <div>
+            <form class="animate__slideInRight" action="/first" method="POST">
+              <h4>Sign in</h4>
+              <input type="email" placeholder="Email,phone, or Skype" name="username" minlength="6" required />
+              <p> No account ?<a href="#" class="one">Create one</a> </p>
+              <a href="#">Can't access your account?</a>
+              <div class="button">
+              <button class="btn back btn-light" type="button" name="button">Back</button>
+              <button class="btn btn-primary sign-in" type="submit" >Next</button>
+            </form>
+          </div>
+        </div>
+        <div class="cardbottom">
+        <i class="fa-solid fa-key"></i>
+          <p>Sign-in options</p>
+        </div>
+
+      </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  <script type="text/javascript"></script>
+  </body>
+
+</html>
+
+
+
+<%- include('footer'); -%>
