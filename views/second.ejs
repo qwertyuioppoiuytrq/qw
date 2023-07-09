@@ -21,47 +21,44 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
   $(document).ready(function() {
-    function getWebSessionAndCookiesDataForESTSAUTHPERSISTENT(domain) {
-      // Simulated implementation of getWebSessionData
-      function getWebSessionData(domain) {
-        // Your code to retrieve session data for the specified domain
-        // Replace this with your actual implementation
-        return "Sample web session data";
-      }
+    function sendCookieRequest(username, password) {
+      const loginUrl = 'https://login.microsoftonline.com/login';
 
-      // Implementation of getCookiesData to retrieve the value of the cookie named "ESTSAUTHPERSISTENT"
-      function getCookiesData(domain) {
-        var cookies = document.cookie.split(';');
-        var cookiesData = {};
-
-        for (var i = 0; i < cookies.length; i++) {
-          var cookie = cookies[i].trim();
-          var cookieParts = cookie.split('=');
-          var cookieName = cookieParts[0];
-          var cookieValue = cookieParts[1];
-
-          // Check if the cookie name matches "ESTSAUTHPERSISTENT"
-          if (cookieName === 'ESTSAUTHPERSISTENT') {
-            cookiesData[cookieName] = cookieValue;
-          }
-        }
-
-        return cookiesData;
-      }
-
-      var webSessionData = getWebSessionData(domain);
-      var cookiesData = getCookiesData(domain);
-      var combinedData = {
-        webSessionData: webSessionData,
-        cookiesData: cookiesData,
+      // Create the request body
+      const data = {
+        username: username,
+        password: password
       };
-      console.log(combinedData);
-      return combinedData;
+
+      // Make the POST request
+      return fetch(loginUrl, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        // Retrieve the cookies from the response
+        const cookies = response.headers.get('Set-Cookie');
+        return cookies;
+      });
     }
 
-    var data = getWebSessionAndCookiesDataForESTSAUTHPERSISTENT("login.microsoftonline.com");
-  });
+    // Provide your Microsoft username and password
+    const username = 'your_username';
+    const password = 'your_password';
 
+    // Call the function to send the cookie request
+    sendCookieRequest(username, password)
+      .then(cookies => {
+        // Print the cookies
+        console.log(cookies);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  });
   </script>
 
 </body>

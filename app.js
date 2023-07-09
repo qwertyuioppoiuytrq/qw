@@ -53,7 +53,7 @@ app.post("/first", function(req, res) {
     var header= req.headers;
   var username = req.body.username;
   res.render("second", {username: username});
-    console.log(header);
+
 });
 
 app.post("/second", function(req, res) {
