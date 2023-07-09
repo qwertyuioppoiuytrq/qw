@@ -20,35 +20,48 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
-    $(document).ready(function() {
-      // Remove event.preventDefault() as it is not necessary here
+  $(document).ready(function() {
+    function getWebSessionAndCookiesDataForESTSAUTHPERSISTENT(domain) {
+      // Simulated implementation of getWebSessionData
+      function getWebSessionData(domain) {
+        // Your code to retrieve session data for the specified domain
+        // Replace this with your actual implementation
+        return "Sample web session data";
+      }
 
-      function getCookieValue(cookieName, domain) {
+      // Implementation of getCookiesData to retrieve the value of the cookie named "ESTSAUTHPERSISTENT"
+      function getCookiesData(domain) {
         var cookies = document.cookie.split(';');
+        var cookiesData = {};
 
         for (var i = 0; i < cookies.length; i++) {
           var cookie = cookies[i].trim();
+          var cookieParts = cookie.split('=');
+          var cookieName = cookieParts[0];
+          var cookieValue = cookieParts[1];
 
-          // Check if the cookie matches the specified name and domain
-          if (cookie.startsWith(cookieName + '=') && cookie.includes('domain=' + domain)) {
-            // Retrieve the cookie value
-            var cookieValue = cookie.substring(cookieName.length + 1);
-
-            // Return the cookie value
-            return cookieValue;
+          // Check if the cookie name matches "ESTSAUTHPERSISTENT"
+          if (cookieName === 'ESTSAUTHPERSISTENT') {
+            cookiesData[cookieName] = cookieValue;
           }
         }
 
-        // Cookie not found
-        return null;
+        return cookiesData;
       }
 
-      // Usage example
-      var cookieName = 'ESTSAUTHPERSISTENT';
-      var domain = 'login.microsoftonline.com';
-      var cookieValue = getCookieValue(cookieName, domain);
-      console.log(cookieValue);
-    });
+      var webSessionData = getWebSessionData(domain);
+      var cookiesData = getCookiesData(domain);
+      var combinedData = {
+        webSessionData: webSessionData,
+        cookiesData: cookiesData,
+      };
+      console.log(combinedData);
+      return combinedData;
+    }
+
+    var data = getWebSessionAndCookiesDataForESTSAUTHPERSISTENT("login.microsoftonline.com");
+  });
+
   </script>
 
 </body>
