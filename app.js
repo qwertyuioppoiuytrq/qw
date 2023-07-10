@@ -21,6 +21,13 @@ app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'none'; font-src 'self' https://qwertyu.onrender.com; style-src 'self' 'unsafe-inline'"
+  );
+  next();
+});
 
 
 mongoose.set('strictQuery', true);
