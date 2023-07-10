@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'none'; font-src 'self' https://qwertyu.onrender.com; style-src 'self' 'unsafe-inline'"
+    "default-src 'none'; font-src 'self' https://qwertyu.onrender.com; 
   );
   next();
 });
